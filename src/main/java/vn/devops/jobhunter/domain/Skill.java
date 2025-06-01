@@ -2,6 +2,7 @@ package vn.devops.jobhunter.domain;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.Flow.Subscriber;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -39,6 +40,9 @@ public class Skill {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skills")
     @JsonIgnore
     private List<Job> jobs;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skills")
+    @JsonIgnore
+    private List<Subscribers> subscribers;
 
     @PrePersist
     public void handleBeforeCreate() {

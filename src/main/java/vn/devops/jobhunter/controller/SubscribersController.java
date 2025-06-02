@@ -15,6 +15,7 @@ import vn.devops.jobhunter.service.Subscribers;
 import vn.devops.jobhunter.util.error.IdInvalidException;
 @RestController
 @RequestMapping("/api/v1/subscribers") 
+                         
 
 public class SubscribersController {
     private final Subscribers subscribers_servies;
@@ -24,8 +25,7 @@ public class SubscribersController {
     
 
 
-
-    @PostMapping("/")
+    @PostMapping("")
     public vn.devops.jobhunter.domain.Subscribers CreateNewSubscribersController(@RequestBody vn.devops.jobhunter.domain.Subscribers subscribers) throws IdInvalidException {
         return this.subscribers_servies.CreateNewSubscribers(subscribers);
 

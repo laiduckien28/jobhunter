@@ -1,0 +1,47 @@
+
+services:
+  mysql:
+    image: mysql:8.0 
+    container_name: jobhunter-mysql
+    environment:
+      MYSQL_DATABASE: jobhunter
+      MYSQL_ROOT_PASSWORD: Abcde@12345
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - jobhunter-network
+
+  be:
+    build: .
+    container_name: jobhunter-backend
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/jobhunter
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Abcde@12345
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+    networks:
+      - jobhunter-network
+
+    volumes:
+      - ./upload:/upload   
+
+  fe:
+    image: fe:v6
+    container_name: jobhunter-frontend
+    depends_on:
+      - be
+    ports:
+      - "3000:3000"
+    networks:
+      - jobhunter-network
+volumes:
+  mysql_data:
+
+networks:
+  jobhunter-network:

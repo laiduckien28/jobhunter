@@ -28,9 +28,14 @@ pipeline {
                 sh 'gradle clean build'
             }
         }
+          stage('SonarQube Analysis') {
+    withSonarQubeEnv() {
+      sh "./gradlew sonar"
+    }
+  }
         stage(('Deploy')) {
             steps {
-                sh 'java -jar /home/ubuntu/workspace/JobHunter-Project/cicd-be/build/libs/jobhunter-0.0.1-SNAPSHOT.jar'
+                sh 'nohup java -jar /home/ubuntu/workspace/JobHunter-Project/cicd-be/build/libs/jobhunter-0.0.1-SNAPSHOT.jar > log.txt 2>&1 &'
             }
         }
 

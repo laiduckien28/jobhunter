@@ -24,6 +24,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                     sh '''
+                            chmod +x ./gradlew
                             ./gradlew sonar \
                             -Dsonar.projectKey=jobHunter \
                             -Dsonar.host.url=http://192.168.11.125:9000 \

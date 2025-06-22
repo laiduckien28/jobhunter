@@ -1,5 +1,8 @@
 pipeline {
-    agent Jenkins-Agent-01
+    agent {
+        label : 'Jenkins-Agent-01'
+    }
+        
     
     stages {
         stage('Build') {

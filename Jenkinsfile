@@ -29,7 +29,7 @@ pipeline {
             }
         }
         stage(('Deploy')) {
-            steps: {
+            steps {
                 sh 'java -jar jobhunter-0.0.1-SNAPSHOT.jar'
             }
         }

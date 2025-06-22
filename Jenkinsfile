@@ -23,15 +23,13 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
                     sh '''
-                        gradle sonarqube \
+                            ./gradlew sonar \
                             -Dsonar.projectKey=jobHunter \
                             -Dsonar.host.url=http://192.168.11.125:9000 \
-                            -Dsonar.login=tyler \
-                            -Dsonar.password=123456
+                            -Dsonar.login=sqa_3d6aa516d3aa48b250e921b06ef7342e9a22e692
                     '''
-                }
+                
             }
         }
 

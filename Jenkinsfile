@@ -23,9 +23,14 @@ pipeline {
                     userRemoteConfigs: [[url: 'https://github.com/laiduckien28/jobhunter.git']])
             }
         }
-        stage('Gradle') {
+        stage('Gradle Build') {
             steps {
                 sh 'gradle clean build'
+            }
+        }
+        stage(('Deploy')) {
+            steps: {
+                sh 'java -jar jobhunter-0.0.1-SNAPSHOT.jar'
             }
         }
 

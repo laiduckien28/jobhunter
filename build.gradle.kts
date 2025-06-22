@@ -12,11 +12,15 @@ version = "0.0.1-SNAPSHOT"
 java {
 	sourceCompatibility = JavaVersion.VERSION_17
 }
-sonar {
-  properties {
-    property "sonar.projectKey", "jobHunter"
-  }
+sonarqube {
+    properties {
+        property("sonar.projectKey", "jobHunter")
+        property("sonar.host.url", "http://192.168.11.125:9000/") 
+        property("sonar.sourceEncoding", "UTF-8")
+        property("sonar.java.binaries", "build/classes")
+    }
 }
+
 repositories {
 	mavenCentral()
 }

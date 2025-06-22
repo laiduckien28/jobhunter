@@ -25,8 +25,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
-                        chmod +x ./gradlew
-                        ./gradlew sonarqube \
+                        gradle sonarqube \
                             -Dsonar.projectKey=jobHunter \
                             -Dsonar.host.url=http://192.168.11.125:9000 \
                             -Dsonar.login=tyler \

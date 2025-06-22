@@ -29,9 +29,12 @@ pipeline {
             }
         }
           stage('SonarQube Analysis') {
-    withSonarQubeEnv() {
+            steps {
+                    withSonarQubeEnv() {
       sh "./gradlew sonar"
     }
+            }
+
   }
         stage(('Deploy')) {
             steps {

@@ -30,7 +30,7 @@ pipeline {
         }
         stage(('Deploy')) {
             steps {
-                sh 'java -jar jobhunter-0.0.1-SNAPSHOT.jar'
+                sh 'java -jar /home/ubuntu/workspace/JobHunter-Project/cicd-be/build/libs/jobhunter-0.0.1-SNAPSHOT.jar'
             }
         }
 

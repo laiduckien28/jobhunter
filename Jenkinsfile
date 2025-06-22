@@ -1,47 +1,57 @@
 pipeline {
-
     agent {
-    node {
-        label 'Jenkins-Agent-01'
+        node {
+            label 'Jenkins-Agent-01'
+        }
     }
 
-} 
     tools {
-        gradle "Gradle 7.5.1"
-    } 
-    
+        gradle 'Gradle 7.5.1'
+    }
+
     stages {
-        stage('Cleanup WorkSpace') {
+        stage('Cleanup Workspace') {
             steps {
                 cleanWs()
             }
         }
-        stage("Checkout from SCM") {
-            steps{
+
+        stage('Checkout from SCM') {
+            steps {
                 checkout scmGit(
                     branches: [[name: 'main']],
-                    userRemoteConfigs: [[url: 'https://github.com/laiduckien28/jobhunter.git']])
+                    userRemoteConfigs: [[url: 'https://github.com/laiduckien28/jobhunter.git']]
+                )
             }
         }
+
         stage('Gradle Build') {
             steps {
-                sh 'gradle clean build'
+                sh '''
+                    chmod +x ./gradlew
+                    ./gradlew clean build
+                '''
             }
         }
-          stage('SonarQube Analysis') {
+
+        stage('SonarQube Analysis') {
             steps {
-                    withSonarQubeEnv('SonarQube') {
-                    sh "./gradlew sonar"
-                    }
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        chmod +x ./gradlew
+                        whoami
+                        ./gradlew sonarqube
+                    '''
+                }
             }
-
         }
-        stage(('Deploy')) {
+
+        stage('Deploy') {
             steps {
-                sh 'nohup java -jar /home/ubuntu/workspace/JobHunter-Project/cicd-be/build/libs/jobhunter-0.0.1-SNAPSHOT.jar > log.txt 2>&1 &'
+                sh '''
+                    nohup java -jar build/libs/jobhunter-0.0.1-SNAPSHOT.jar > log.txt 2>&1 &
+                '''
             }
         }
-
-
     }
 }

@@ -9,7 +9,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Hello World'
+                cleanWs()
+                checkout scm
             }
         }
     }

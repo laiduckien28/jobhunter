@@ -4,10 +4,11 @@ pipeline {
     node {
         label 'Jenkins-Agent-01'
     }
+
+} 
     tools {
         gradle "Gradle 7.5.1"
-    }
-}  
+    } 
     
     stages {
         stage('Cleanup WorkSpace') {

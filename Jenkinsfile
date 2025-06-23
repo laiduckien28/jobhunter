@@ -40,15 +40,20 @@ pipeline {
                     docker build -t 192.168.11.137:8082/repository/image-jobhunter:v1.1 .
                     docker login http://192.168.11.137:8082 -u admin -p 123456
                     docker push 192.168.11.137:8082/repository/image-jobhunter:v1.1
+                    docker rmi 192.168.11.137:8082/repository/image-jobhunter:v1.1
                 '''
             }
         } 
 
-        // stage('Deploy') {
-        //     steps {
-        //         sh 'nohup java -jar build/libs/jobhunter-0.0.1-SNAPSHOT.jar > log.txt 2>&1 &'
-        //     }
-        // }
+        stage('Deploy') {
+            steps {
+                sh '''
+                    docker pull  192.168.11.137:8082/repository/image-jobhunter:v1.1
+                    docker run --name jobhunter-backend -d -p 8080:8080 192.168.11.137:8082/repository/image-jobhunter:v1.1
+                
+                '''
+            }
+        }
     }
 }
 

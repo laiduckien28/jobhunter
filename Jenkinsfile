@@ -4,7 +4,13 @@ pipeline {
     tools {
         gradle 'Gradle 7.5.1'
     }
-
+    environment {
+        IMAGE_NAME = 'jobhunter-backend'
+        IMAGE_VERSION = "${BUILD_NUMBER}"
+        REGISTRY_URL = '192.168.11.137:8082'
+        REPO_PATH = 'repository/image-jobhunter'
+        FULL_IMAGE = "${REGISTRY_URL}/${REPO_PATH}/${IMAGE_NAME}:${IMAGE_VERSION}"
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -34,26 +40,36 @@ pipeline {
             }
         }
 
-        stage('Docker build') {
+        stage('Docker Build & Push') {
             steps {
-                sh ''' 
-                    docker build -t 192.168.11.137:8082/repository/image-jobhunter:v1.1 .
-                    docker login http://192.168.11.137:8082 -u admin -p 123456
-                    docker push 192.168.11.137:8082/repository/image-jobhunter:v1.1
-                    docker rmi 192.168.11.137:8082/repository/image-jobhunter:v1.1
+                sh '''
+                    echo "Building image: $FULL_IMAGE"
+                    docker build -t $FULL_IMAGE .
+                    
+                    echo "Logging in to registry..."
+                    echo 123456 | docker login $REGISTRY_URL -u admin --password-stdin
+                    
+                    echo "Pushing image..."
+                    docker push $FULL_IMAGE
+                    
+                    docker rmi $FULL_IMAGE
                 '''
             }
-        } 
+        }
 
         stage('Deploy') {
             steps {
                 sh '''
-                    docker pull  192.168.11.137:8082/repository/image-jobhunter:v1.1
-                    docker run --name jobhunter-backend -d -p 8080:8080 192.168.11.137:8082/repository/image-jobhunter:v1.1
-                
+                    echo "Deploying image: $FULL_IMAGE"
+                    docker pull $FULL_IMAGE
+                    
+                    docker rm -f jobhunter-backend || true
+                    
+                    docker run --name jobhunter-backend -d -p 8080:8080 $FULL_IMAGE
                 '''
             }
         }
+        
     }
 }
 

@@ -37,9 +37,9 @@ pipeline {
         stage('Docker build') {
             steps {
                 sh ''' 
-                    docker build -t 192.168.11.137:8082/repository/image-jobhunter:v1.0 .
-
-                    docker push 192.168.11.137:8082/repository/image-jobhunter:v1.0
+                    docker build -t 192.168.11.137:8082/repository/image-jobhunter:v1.1 .
+                    docker login http://192.168.11.137:8082 -u admin -p 123456
+                    docker push 192.168.11.137:8082/repository/image-jobhunter:v1.1
                 '''
             }
         } 

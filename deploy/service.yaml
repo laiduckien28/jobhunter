@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jobhunter-svc
+spec:
+  selector:
+    app: jobhunter
+  ports:
+  - port: 80
+    targetPort: 8080

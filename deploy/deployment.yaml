@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jobhunter-deployment
+  namespace: ac-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jobhunter
+  template:
+    metadata:
+      labels:
+        app: jobhunter
+    spec:
+      containers:
+      - name: jobhunter
+        image: IMAGE_PLACEHOLDER
+        ports:
+        - containerPort: 8080
+
+
+
+

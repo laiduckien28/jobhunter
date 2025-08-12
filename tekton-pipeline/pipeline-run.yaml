@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: build-and-deploy-run-
+spec:
+  pipelineRef:
+    name: build-and-deploy
+  params:
+  - name: app-name
+    value: jobhunter
+  - name: git-url
+    value: https://github.com/laiduckien28/jobhunter.git
+  - name: git-revision
+    value: main
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

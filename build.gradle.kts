@@ -3,7 +3,7 @@ plugins {
 	id("org.springframework.boot") version "3.2.4"
 	id("io.spring.dependency-management") version "1.1.4"
 	id("org.sonarqube") version "6.2.0.5505"
-	id("org.cyclonedx.bom") version '1.8.1'
+	id("org.cyclonedx.bom") version "1.8.1"
 
 	// id("io.freefair.lombok") version "8.6"
 }

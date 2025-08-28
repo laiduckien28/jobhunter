@@ -5,10 +5,10 @@ stages:
   - UPDATE
 include:
   - project: 'FIS/cicd-template'  
-    file: 'SAST/sonar-template-js-ts-web.yaml'
+    file: 'SAST/sonar-template-gradle.yml'
     ref: release-template
   - project: 'FIS/cicd-template'  
-    file: 'SCA/sca-template-npm.yaml'
+    file: 'SCA/sca-template-gradle.yaml'
     ref: release-template
   - project: 'FIS/cicd-template'  
     file: 'SECRET_SCAN/secret-scan-template.yaml'
@@ -25,7 +25,7 @@ variables:
 
 
   # Dependency-Track
-  PROJECT_NAME: "react-frontend"                 
+  PROJECT_NAME: "spring-backend"                 
   BOM_FILE: "bom.json"
   DTRACK_URL: "http://10.40.1.142:8080"          
   DTRACK_API_KEY: odt_Wn9AevEb_3iYSt7mD3vQPdkatW5Vaegteus5SkBjj               

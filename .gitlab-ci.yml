@@ -1,0 +1,98 @@
+stages:
+  - SECRET_SCAN
+  - SAST
+  - SCA
+  - UPDATE
+include:
+  - project: 'FIS/cicd-template'  
+    file: 'SAST/sonar-template-js-ts-web.yaml'
+    ref: release-template
+  - project: 'FIS/cicd-template'  
+    file: 'SCA/sca-template-npm.yaml'
+    ref: release-template
+  - project: 'FIS/cicd-template'  
+    file: 'SECRET_SCAN/secret-scan-template.yaml'
+    ref: release-template
+
+
+variables:
+  IMAGE_NAME: 10.40.1.138/public-repo/be
+  CI_REGISTRY_PASSWORD: Harbor12345
+  CI_REGISTRY_USER: admin
+  REGISTRY: 10.40.1.138
+
+
+
+
+  # Dependency-Track
+  PROJECT_NAME: "react-frontend"                 
+  BOM_FILE: "bom.json"
+  DTRACK_URL: "http://10.40.1.142:8080"          
+  DTRACK_API_KEY: odt_Wn9AevEb_3iYSt7mD3vQPdkatW5Vaegteus5SkBjj               
+
+
+
+build-scan-push:
+  stage: SCA
+  image: 
+    name: docker:20.10.16
+    entrypoint: [""]
+
+  services:
+    - name: docker:20.10.16-dind
+      alias: docker
+      command: ["--insecure-registry","10.40.1.138"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - apk add --no-cache curl
+    - wget -qO- https://github.com/aquasecurity/trivy/releases/download/v0.52.2/trivy_0.52.2_Linux-64bit.tar.gz | tar zx
+    - mv trivy /usr/local/bin/
+  script:
+    - docker build -t $IMAGE_NAME:$CI_COMMIT_SHORT_SHA .
+
+    - trivy image --exit-code 1 --severity HIGH,CRITICAL --format cyclonedx --output $BOM_FILE $IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+
+
+    - |
+      curl -X POST "${DTRACK_URL}/api/v1/bom" \
+        -H "X-Api-Key: ${DTRACK_API_KEY}" \
+        -F "project=a1209854-3528-4dbc-9eee-5a2fa73baf98" \
+        -F "bom=@${BOM_FILE}"
+
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $REGISTRY
+    - docker push $IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+  tags:
+    - docker
+  only:
+    - main
+
+
+
+
+# update-deployment:
+#   stage: UPDATE
+#   image: alpine:latest
+#   before_script:
+#     - apk add --no-cache git yq
+#     - git config --global user.email "ci-bot@gitlab.fis.local"
+#     - git config --global user.name "GitLab CI Bot"
+#     - git config --global http.sslVerify false   # bỏ verify TLS
+#   script:
+#     - git clone https://oauth2:glpat--tEipIM4Ay0Lg-Oj9szAIW86MQp1OjUH.01.0w1ft0lrb@10.40.1.140/fis/gitops.git
+#     - cd gitops
+#     - git checkout release-fe
+#     - yq -i '
+#         select(.kind == "Deployment")
+#         .spec.template.spec.containers[0].image = "'"${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}"'"
+#       ' app/fe/deployment.yaml
+#     - git add app/fe/deployment.yaml
+#     - git commit -m "Update FE image to tag ${CI_COMMIT_SHORT_SHA}"
+#     - git push origin release-fe
+#   tags:
+#     - docker
+#   only:
+#     - main
+#   needs:
+#     - build-scan-push

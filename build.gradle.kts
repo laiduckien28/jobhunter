@@ -3,6 +3,8 @@ plugins {
 	id("org.springframework.boot") version "3.2.4"
 	id("io.spring.dependency-management") version "1.1.4"
 	id("org.sonarqube") version "6.2.0.5505"
+	id("org.cyclonedx.bom") version '1.8.1'
+
 	// id("io.freefair.lombok") version "8.6"
 }
 
@@ -12,14 +14,13 @@ version = "0.0.1-SNAPSHOT"
 java {
 	sourceCompatibility = JavaVersion.VERSION_17
 }
-// sonar  {
-//     properties {
-//         property("sonar.projectKey", "jobHunter")
-//         property("sonar.host.url", "http://192.168.11.125:9000/") 
-// 		property("sonar.login", "tyler")
-//         property("sonar.password", "123456")
-//     }
-// }
+sonar {
+  properties {
+    property("sonar.projectKey", "ac-dev-be-jobhunter")
+    property("sonar.projectName", "ac-dev-be-jobhunter")
+    property("sonar.qualitygate.wait", true)
+  }
+}
 
 repositories {
 	mavenCentral()
